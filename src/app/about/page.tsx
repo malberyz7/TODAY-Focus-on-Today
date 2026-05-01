@@ -11,19 +11,18 @@ import { ArrowLeftIcon } from "lucide-react";
 
 const AUTHOR_EMAIL = "alimzhan_meirambek@mail.ru";
 
-const PARAGRAPHS = [
-  "Моё имя — Алимжан, мне 17 лет, и я заканчиваю 11 класс.",
-  "Последний год я часто ловлю себя на мысли, что делаю что-то не то и угнетаю себя за это.",
-  "У меня было много плохих привычек, и я создал этот проект, чтобы избавиться от них.",
-  "Я знаю, что таких людей, как я, много. И этот проект изначально был инструментом, который я сделал для себя.",
-  "Но позже я решил опубликовать его, чтобы он мог помочь и другим людям.",
-  "Надеюсь, этот инструмент будет вам полезен и поможет в изменениях.",
-  "Всем спасибо и удачи в начинаниях.",
-] as const;
-
 export default function AboutPage() {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
+  const paragraphs = [
+    t("aboutAuthorParagraph1"),
+    t("aboutAuthorParagraph2"),
+    t("aboutAuthorParagraph3"),
+    t("aboutAuthorParagraph4"),
+    t("aboutAuthorParagraph5"),
+    t("aboutAuthorParagraph6"),
+    t("aboutAuthorParagraph7"),
+  ];
 
   async function copyEmail() {
     try {
@@ -59,12 +58,12 @@ export default function AboutPage() {
           </h1>
 
           <div className="mx-auto max-w-2xl space-y-6 text-pretty text-[1.02rem] leading-8 text-foreground/95">
-            {PARAGRAPHS.map((paragraph) => (
+            {paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
 
             <p className="pt-2 text-sm leading-relaxed text-muted-foreground">
-              📩 Связь:{" "}
+              📩 {t("aboutAuthorContactLabel")}:{" "}
               <button
                 type="button"
                 onClick={copyEmail}

@@ -146,6 +146,19 @@ const ru = {
   ritualEveningNotePlaceholder: "Что сработало, что нет…",
   aboutAuthorNav: "Об авторе",
   aboutAuthorTitle: "Об авторе",
+  aboutAuthorParagraph1: "Моё имя — Алимжан, мне 17 лет, и я заканчиваю 11 класс.",
+  aboutAuthorParagraph2:
+    "Последний год я часто ловлю себя на мысли, что делаю что-то не то и угнетаю себя за это.",
+  aboutAuthorParagraph3:
+    "У меня было много плохих привычек, и я создал этот проект, чтобы избавиться от них.",
+  aboutAuthorParagraph4:
+    "Я знаю, что таких людей, как я, много. И этот проект изначально был инструментом, который я сделал для себя.",
+  aboutAuthorParagraph5:
+    "Но позже я решил опубликовать его, чтобы он мог помочь и другим людям.",
+  aboutAuthorParagraph6:
+    "Надеюсь, этот инструмент будет вам полезен и поможет в изменениях.",
+  aboutAuthorParagraph7: "Всем спасибо и удачи в начинаниях.",
+  aboutAuthorContactLabel: "Связь",
   copiedToast: "Скопировано",
 } as const;
 
@@ -290,8 +303,21 @@ const en: Record<keyof typeof ru, string> = {
   ritualEveningNoteLabel: "Short note",
   ritualEveningNotePlaceholder: "What worked, what did not…",
   aboutAuthorNav: "About author",
-  aboutAuthorTitle: "About author",
-  copiedToast: "Скопировано",
+  aboutAuthorTitle: "About the author",
+  aboutAuthorParagraph1: "My name is Alimzhan, I am 17 years old, and I am finishing 11th grade.",
+  aboutAuthorParagraph2:
+    "Over the last year, I often catch myself thinking I am doing something wrong and putting myself down for it.",
+  aboutAuthorParagraph3:
+    "I had many bad habits, and I created this project to get rid of them.",
+  aboutAuthorParagraph4:
+    "I know there are many people like me. At first, this project was a tool I made for myself.",
+  aboutAuthorParagraph5:
+    "But later I decided to publish it so it could help other people too.",
+  aboutAuthorParagraph6:
+    "I hope this tool will be useful for you and support your changes.",
+  aboutAuthorParagraph7: "Thank you all, and good luck with your new beginnings.",
+  aboutAuthorContactLabel: "Contact",
+  copiedToast: "Copied",
 };
 
 export const messages = { ru, en } as const;
