@@ -1,4 +1,4 @@
-# TODAY — Focus on Today
+# Still — Focus on Today
 
 A personal discipline and habit tracking app focused on self-improvement, reflection, and consistency.
 
@@ -6,7 +6,7 @@ A personal discipline and habit tracking app focused on self-improvement, reflec
 
 ## 🧠 About the Project
 
-TODAY is not just a habit tracker.
+Still is not just a habit tracker.
 
 It is a tool designed to help people:
 - break bad habits
