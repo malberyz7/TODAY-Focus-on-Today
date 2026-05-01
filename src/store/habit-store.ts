@@ -19,6 +19,7 @@ import { NOTE_MAX_CHARS } from "@/lib/note-limits";
 export type { Habit, HabitMotivation, AntiSryvDayEntry, RitualDayEntry } from "@/lib/habit-model";
 
 export type AntiSryvIntervalDays = 2 | 3;
+const HAS_INITIALIZED_APP_KEY = "hasInitializedApp";
 
 function newId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -125,6 +126,8 @@ type HabitState = {
   setAntiSryvInterval: (days: AntiSryvIntervalDays) => void;
   saveAntiSryvCheckin: (habitId: string, dateKey: string, entry: AntiSryvDayEntry) => void;
   patchRitual: (habitId: string, dateKey: string, patch: Partial<RitualDayEntry>) => void;
+  /** Run once after hydration: migrate + first-launch seeding guarded by localStorage flag. */
+  initializeApp: () => void;
   /** Maps legacy `successDates` → `completedDays`, fills `notes`. */
   migrateLegacyHabits: () => void;
   addHabit: (name: string, goalDays: number | null, motivation: HabitMotivation) => void;
@@ -132,7 +135,6 @@ type HabitState = {
   toggleDay: (habitId: string, dateKey: string) => void;
   /** Persist trimmed note; empty / whitespace removes that date key. */
   setNote: (habitId: string, dateKey: string, text: string) => void;
-  seedIfEmpty: () => void;
 };
 
 export const useHabitStore = create<HabitState>()(
@@ -189,6 +191,30 @@ export const useHabitStore = create<HabitState>()(
         }));
       },
 
+      initializeApp: () => {
+        // 1) Normalize persisted shape first.
+        get().migrateLegacyHabits();
+
+        // 2) Respect one-time first-launch seeding.
+        const hasInitialized = (() => {
+          try {
+            return localStorage.getItem(HAS_INITIALIZED_APP_KEY) === "true";
+          } catch {
+            return true;
+          }
+        })();
+
+        if (!hasInitialized && get().habits.length === 0) {
+          set({ habits: createSeedHabits() });
+        }
+
+        try {
+          localStorage.setItem(HAS_INITIALIZED_APP_KEY, "true");
+        } catch {
+          /* ignore */
+        }
+      },
+
       migrateLegacyHabits: () => {
         set((s) => ({
           habits: s.habits
@@ -198,11 +224,6 @@ export const useHabitStore = create<HabitState>()(
             antiSryvIntervalDays: s.settings?.antiSryvIntervalDays === 3 ? 3 : 2,
           },
         }));
-      },
-
-      seedIfEmpty: () => {
-        if (get().habits.length > 0) return;
-        set({ habits: createSeedHabits() });
       },
 
       addHabit: (name, goalDays, motivation) => {

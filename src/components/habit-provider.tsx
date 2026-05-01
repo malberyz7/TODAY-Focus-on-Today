@@ -7,7 +7,7 @@ import { useHabitStore } from "@/store/habit-store";
 const HabitsReadyContext = createContext(false);
 
 /**
- * Waits for zustand-persist to rehydrate from localStorage, then seeds demo habits if needed.
+ * Waits for zustand-persist to rehydrate from localStorage, then runs one-time app init.
  * Children should gate UI on `useHabitsReady()` to avoid empty-state flash.
  */
 export function HabitProvider({ children }: { children: React.ReactNode }) {
@@ -15,8 +15,7 @@ export function HabitProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const finish = () => {
-      useHabitStore.getState().migrateLegacyHabits();
-      useHabitStore.getState().seedIfEmpty();
+      useHabitStore.getState().initializeApp();
       setReady(true);
     };
 
