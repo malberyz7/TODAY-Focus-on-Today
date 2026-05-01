@@ -158,6 +158,13 @@ const ru = {
     "Надеюсь, этот инструмент будет вам полезен и поможет в изменениях в жизни.",
   aboutAuthorParagraph7: "Спасибо и удачи в начинаниях.",
   aboutAuthorContactLabel: "Связь",
+  howItWorksNav: "Как пользоваться",
+  howItWorksTitle: "Как пользоваться",
+  howItWorksParagraph1:
+    "Главное в этом приложении — быть честным с самим собой. Не обманывать себя и отвечать на вопросы максимально честно.",
+  howItWorksParagraph2:
+    "Регулярно следите за своим трекером привычек — так вы сможете реально замечать свой прогресс и изменения в жизни.",
+  howItWorksQuote: "Честность с самим собой — первый шаг к изменениям.",
   copiedToast: "Скопировано",
 } as const;
 
@@ -315,6 +322,13 @@ const en: Record<keyof typeof ru, string> = {
     "I hope this tool will be useful for you and help bring positive changes to your life.",
   aboutAuthorParagraph7: "Thank you, and good luck in your new beginnings.",
   aboutAuthorContactLabel: "Contact",
+  howItWorksNav: "How it works",
+  howItWorksTitle: "How it works",
+  howItWorksParagraph1:
+    "The most important thing in this app is to be honest with yourself. Don’t lie to yourself and answer questions as honestly as possible.",
+  howItWorksParagraph2:
+    "Keep track of your habit tracker regularly — this is how you will notice real progress and changes in your life.",
+  howItWorksQuote: "Honesty with yourself is the first step to change.",
   copiedToast: "Copied",
 };
 

@@ -69,6 +69,12 @@ export function DashboardView() {
             >
               {t("aboutAuthorNav")}
             </Link>
+            <Link
+              href="/how"
+              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t("howItWorksNav")}
+            </Link>
             <p className="text-xs tabular-nums text-muted-foreground">{goalsLabel}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
