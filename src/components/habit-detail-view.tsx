@@ -159,7 +159,7 @@ export function HabitDetailView({ habitId }: HabitDetailViewProps) {
             type="button"
             variant="outline"
             size="sm"
-            className="rounded-full border-white/12 bg-white/[0.04] text-muted-foreground hover:bg-white/[0.08] hover:text-foreground"
+            className="rounded-full border-violet-400/40 bg-violet-500/15 text-violet-50 shadow-sm shadow-violet-900/20 hover:bg-violet-500/25 hover:border-violet-300/60 active:bg-violet-500/30"
             onClick={() => setRecoveryOpen(true)}
           >
             {t("strugglingButton")}
@@ -179,23 +179,8 @@ export function HabitDetailView({ habitId }: HabitDetailViewProps) {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center gap-8 rounded-3xl border border-white/10 bg-card/60 p-6 text-center ring-1 ring-white/5 backdrop-blur-md sm:p-8 sm:pb-9 sm:pt-9 lg:items-stretch lg:p-9 lg:text-left"
         >
-          <div className="flex w-full max-w-full flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-            <div className="shrink-0 pt-0.5">
-              {stats.mode === "infinite" ? (
-                <ProgressRing
-                  variant="infinite"
-                  milestoneFill={stats.milestone.progressToNext}
-                  centerNumber={stats.total}
-                  centerHint={interpolate(t("holdingDaysSubtitle"), { n: stats.total })}
-                  size={140}
-                  strokeWidth={12}
-                  warn={stats.missed && !stats.todayDone}
-                />
-              ) : (
-                <ProgressRing percent={stats.percent} size={140} strokeWidth={12} warn={stats.missed && !stats.todayDone} />
-              )}
-            </div>
-            <div className="flex w-full min-w-0 max-w-full flex-col gap-2.5 text-pretty sm:gap-3 lg:flex-1 lg:text-left">
+          <div className="flex w-full min-w-0 max-w-full flex-col gap-5 text-pretty">
+            <div className="flex w-full min-w-0 flex-col gap-2.5 text-left">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                   {t("habitDetail")}
@@ -210,11 +195,31 @@ export function HabitDetailView({ habitId }: HabitDetailViewProps) {
                 ) : null}
                 <HabitLevelBadge habit={habit} />
               </div>
-              <h1 className="font-heading text-2xl font-semibold tracking-tight break-words sm:text-3xl">
+              <h1
+                title={habit.name}
+                className="font-heading text-xl font-semibold leading-snug tracking-tight sm:text-2xl lg:text-3xl [word-break:normal] [overflow-wrap:break-word]"
+              >
                 {habit.name}
               </h1>
-              <p className="text-sm leading-relaxed text-muted-foreground">{stats.line}</p>
             </div>
+
+            <div className="flex justify-center lg:justify-start">
+              {stats.mode === "infinite" ? (
+                <ProgressRing
+                  variant="infinite"
+                  milestoneFill={stats.milestone.progressToNext}
+                  centerNumber={stats.total}
+                  centerHint={interpolate(t("holdingDaysSubtitle"), { n: stats.total })}
+                  size={132}
+                  strokeWidth={12}
+                  warn={stats.missed && !stats.todayDone}
+                />
+              ) : (
+                <ProgressRing percent={stats.percent} size={132} strokeWidth={12} warn={stats.missed && !stats.todayDone} />
+              )}
+            </div>
+
+            <p className="text-left text-sm leading-relaxed text-muted-foreground">{stats.line}</p>
           </div>
 
           <Separator className="bg-white/10" />

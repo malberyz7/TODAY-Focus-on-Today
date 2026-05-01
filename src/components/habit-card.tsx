@@ -130,7 +130,12 @@ export function HabitCard({ habit }: HabitCardProps) {
               ) : null}
               <HabitLevelBadge habit={habit} />
             </div>
-            <h2 className="font-heading text-lg font-semibold tracking-tight break-words">{habit.name}</h2>
+            <h2
+              title={habit.name}
+              className="font-heading text-base font-semibold leading-relaxed tracking-tight sm:text-lg line-clamp-3 [word-break:keep-all] [overflow-wrap:break-word]"
+            >
+              {habit.name}
+            </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">{stats.line}</p>
           </div>
           <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
@@ -227,7 +232,7 @@ export function HabitCard({ habit }: HabitCardProps) {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="w-full justify-center rounded-full border-violet-500/25 bg-violet-500/10 text-violet-100 hover:bg-violet-500/20"
+                className="w-full justify-center rounded-full border-violet-400/25 bg-violet-500/8 text-violet-100 hover:bg-violet-500/16 hover:border-violet-300/35"
               >
                 {t("todayNote")}
               </Button>
@@ -244,7 +249,7 @@ export function HabitCard({ habit }: HabitCardProps) {
         <Button
           type="button"
           variant="outline"
-          className="w-full rounded-full border-white/12 bg-white/[0.03] text-sm font-normal text-muted-foreground shadow-none hover:bg-white/[0.06] hover:text-foreground"
+          className="w-full rounded-full border-violet-400/40 bg-violet-500/15 text-sm font-medium text-violet-50 shadow-sm shadow-violet-900/20 hover:bg-violet-500/25 hover:border-violet-300/60 active:bg-violet-500/30"
           onClick={() => setRecoveryOpen(true)}
         >
           {t("strugglingButton")}
