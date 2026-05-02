@@ -4,13 +4,11 @@ import {
   addMonths,
   eachDayOfInterval,
   endOfMonth,
-  endOfWeek,
   format,
+  getDay,
   isAfter,
   isBefore,
-  isSameMonth,
   startOfMonth,
-  startOfWeek,
 } from "date-fns";
 import { enUS as enUSLocale, ru as ruLocale } from "date-fns/locale";
 
@@ -48,12 +46,20 @@ export function HabitCalendar({
   const noteDates = useMemo(() => datesWithNotes(notes), [notes]);
   const today = new Date();
 
-  const grid = useMemo(() => {
+  /** Month-only days + pad slots (null) for 7-column layout; week starts Sunday to match headers. */
+  const gridCells = useMemo(() => {
     const monthStart = startOfMonth(cursor);
     const monthEnd = endOfMonth(cursor);
-    const calStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-    const calEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
-    return eachDayOfInterval({ start: calStart, end: calEnd });
+    const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+    const leading = getDay(monthStart);
+    const total = leading + monthDays.length;
+    const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
+    const monthKey = format(monthStart, "yyyy-MM");
+    const cells: ({ kind: "pad" } | { kind: "day"; date: Date })[] = [];
+    for (let i = 0; i < leading; i++) cells.push({ kind: "pad" });
+    for (const date of monthDays) cells.push({ kind: "day", date });
+    for (let i = 0; i < trailing; i++) cells.push({ kind: "pad" });
+    return { cells, monthKey };
   }, [cursor]);
 
   return (
@@ -93,9 +99,18 @@ export function HabitCalendar({
       </div>
 
       <div className="mt-1 grid grid-cols-7 gap-1">
-        {grid.map((day) => {
+        {gridCells.cells.map((cell, index) => {
+          if (cell.kind === "pad") {
+            return (
+              <div
+                key={`${gridCells.monthKey}-pad-${index}`}
+                className="aspect-square rounded-xl"
+                aria-hidden
+              />
+            );
+          }
+          const day = cell.date;
           const key = dayKey(day);
-          const inMonth = isSameMonth(day, cursor);
           const isFuture = isAfter(day, today);
           const beforeStart = isBefore(day, new Date(`${startedAt}T12:00:00`));
           const disabled = isFuture || beforeStart;
@@ -111,18 +126,17 @@ export function HabitCalendar({
               onClick={() => !disabled && onSelectDay(key)}
               className={cn(
                 "relative flex aspect-square items-center justify-center rounded-xl text-xs font-medium transition-colors",
-                !inMonth && "text-muted-foreground/40",
-                inMonth && !disabled && "text-foreground hover:bg-white/10",
+                !disabled && "text-foreground hover:bg-white/10",
                 disabled && "cursor-not-allowed opacity-40",
-                isSelected && inMonth && "ring-2 ring-violet-400/70 ring-offset-2 ring-offset-background",
+                isSelected && !disabled && "ring-2 ring-violet-400/70 ring-offset-2 ring-offset-background",
                 isClean &&
-                  inMonth &&
+                  !disabled &&
                   "bg-emerald-500/20 text-emerald-100 ring-1 ring-emerald-400/40 shadow-[0_0_20px_-6px_rgba(52,211,153,0.65)]",
-                !isClean && inMonth && !disabled && !isFuture && key < dayKey(today) && "text-rose-200/80"
+                !isClean && !disabled && !isFuture && key < dayKey(today) && "text-rose-200/80"
               )}
             >
               {format(day, "d")}
-              {hasNote && inMonth && !disabled ? (
+              {hasNote && !disabled ? (
                 <span
                   className="absolute bottom-1.5 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.9)]"
                   aria-hidden
