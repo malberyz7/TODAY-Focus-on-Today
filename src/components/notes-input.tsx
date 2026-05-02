@@ -25,7 +25,7 @@ type NotesInputProps = {
 };
 
 /**
- * Local draft + debounced autosave into habit.notes[dateKey]. Empty trimmed text removes the note.
+ * Local draft + debounced autosave into habit.notes[dateKey]. Whitespace-only notes remove the entry.
  * Draft may briefly exceed the save cap; persist is always capped at NOTE_MAX_CHARS.
  */
 export function NotesInput({ habitId, dateKey, className }: NotesInputProps) {

@@ -269,15 +269,15 @@ export const useHabitStore = create<HabitState>()(
 
       setNote: (habitId, dateKey, text) => {
         const capped = text.slice(0, NOTE_MAX_CHARS);
-        const trimmed = capped.trim();
         set((s) => ({
           habits: s.habits.map((h) => {
             if (h.id !== habitId) return h;
             const notes = { ...h.notes };
-            if (!trimmed) {
+            // Preserve spaces as typed; trim only to treat whitespace-only as empty.
+            if (!capped.trim()) {
               delete notes[dateKey];
             } else {
-              notes[dateKey] = trimmed;
+              notes[dateKey] = capped;
             }
             return { ...h, notes };
           }),
