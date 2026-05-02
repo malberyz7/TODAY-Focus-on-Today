@@ -33,6 +33,7 @@ import {
   uniqueSuccessCount,
   unlockedMilestones,
 } from "@/lib/habit-logic";
+import { formatDaysCount } from "@/lib/format-plural-days";
 import { getMotivationMessage, interpolate } from "@/lib/i18n-messages";
 import { cn } from "@/lib/utils";
 import { useHabitStore } from "@/store/habit-store";
@@ -209,7 +210,9 @@ export function HabitDetailView({ habitId }: HabitDetailViewProps) {
                   variant="infinite"
                   milestoneFill={stats.milestone.progressToNext}
                   centerNumber={stats.total}
-                  centerHint={interpolate(t("holdingDaysSubtitle"), { n: stats.total })}
+                  centerHint={interpolate(t("holdingDaysSubtitle"), {
+                    days: formatDaysCount(locale, stats.total),
+                  })}
                   size={132}
                   strokeWidth={12}
                   warn={stats.missed && !stats.todayDone}

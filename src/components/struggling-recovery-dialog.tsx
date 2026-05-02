@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { formatCleanDaysPhrase } from "@/lib/format-plural-days";
 import { interpolate } from "@/lib/i18n-messages";
 import type { Habit } from "@/lib/habit-model";
 import { HeartHandshakeIcon } from "lucide-react";
@@ -52,7 +53,7 @@ export function StrugglingRecoveryDialog({
   open,
   onOpenChange,
 }: StrugglingRecoveryDialogProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const { why, benefit, loss } = habit.motivation;
 
   const progressLine =
@@ -63,7 +64,7 @@ export function StrugglingRecoveryDialog({
           remaining: stats.remaining,
         })
       : interpolate(t("infiniteCardFooter"), {
-          total: stats.total,
+          clean: formatCleanDaysPhrase(locale, stats.total),
           streak: stats.streak,
           longest: stats.longest,
         });

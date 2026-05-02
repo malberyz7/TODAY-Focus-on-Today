@@ -9,6 +9,7 @@ import {
   INFINITE_MILESTONE_DAYS,
   type InfiniteMilestoneProgress,
 } from "@/lib/habit-logic";
+import { formatDaysCount } from "@/lib/format-plural-days";
 import { interpolate } from "@/lib/i18n-messages";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ export function InfiniteHabitSummary({
   compact,
   omitHero,
 }: InfiniteHabitSummaryProps) {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const prev = useRef(totalClean);
   const [celebrate, setCelebrate] = useState(false);
 
@@ -69,7 +70,7 @@ export function InfiniteHabitSummary({
               {totalClean}
             </p>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {interpolate(t("holdingDaysSubtitle"), { n: totalClean })}
+              {interpolate(t("holdingDaysSubtitle"), { days: formatDaysCount(locale, totalClean) })}
             </p>
           </motion.div>
         </div>
