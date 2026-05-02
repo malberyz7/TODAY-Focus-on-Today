@@ -1,4 +1,4 @@
-import { dayKey, sortUniqueDateKeys } from "@/lib/habit-logic";
+import { dayKey, normalizeCalendarDateKey, sortUniqueDateKeys } from "@/lib/habit-logic";
 
 /** Max length per motivation answer (persist + UI). */
 export const MOTIVATION_ANSWER_MAX_CHARS = 800;
@@ -144,7 +144,7 @@ export function ensureHabit(raw: LegacyHabit): Habit {
     name: String(raw.name ?? ""),
     goalDays: normalizeGoalDays(raw),
     completedDays,
-    startedAt: String(raw.startedAt || dayKey(new Date())),
+    startedAt: normalizeCalendarDateKey(String(raw.startedAt || "")) ?? dayKey(new Date()),
     notes,
     motivation: normalizeMotivation(raw.motivation),
     antiSryvCheckins: normalizeAntiSryv(raw.antiSryvCheckins),

@@ -8,13 +8,15 @@ import {
   getDay,
   isAfter,
   isBefore,
+  isValid,
+  startOfDay,
   startOfMonth,
 } from "date-fns";
 import { enUS as enUSLocale, ru as ruLocale } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/language-provider";
-import { dayKey, datesWithNotes } from "@/lib/habit-logic";
+import { datesWithNotes, dayKey, normalizeCalendarDateKey, parseDayKey } from "@/lib/habit-logic";
 import { cn } from "@/lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -45,6 +47,13 @@ export function HabitCalendar({
   const completed = useMemo(() => new Set(completedDays), [completedDays]);
   const noteDates = useMemo(() => datesWithNotes(notes), [notes]);
   const today = new Date();
+  /** Start-of first trackable calendar day — must not compare cell midnight to “noon same day” or the start day stays disabled. */
+  const habitStartedAt = useMemo(() => {
+    const k = normalizeCalendarDateKey(startedAt);
+    if (!k) return null;
+    const d = parseDayKey(k);
+    return isValid(d) ? d : null;
+  }, [startedAt]);
 
   /** Month-only days + pad slots (null) for 7-column layout; week starts Sunday to match headers. */
   const gridCells = useMemo(() => {
@@ -111,8 +120,8 @@ export function HabitCalendar({
           }
           const day = cell.date;
           const key = dayKey(day);
-          const isFuture = isAfter(day, today);
-          const beforeStart = isBefore(day, new Date(`${startedAt}T12:00:00`));
+          const isFuture = isAfter(day, startOfDay(today));
+          const beforeStart = habitStartedAt != null && isBefore(day, habitStartedAt);
           const disabled = isFuture || beforeStart;
           const isClean = completed.has(key);
           const hasNote = noteDates.has(key);
@@ -128,10 +137,12 @@ export function HabitCalendar({
                 "relative flex aspect-square items-center justify-center rounded-xl text-xs font-medium transition-colors",
                 !disabled && "text-foreground hover:bg-white/10",
                 disabled && "cursor-not-allowed opacity-40",
-                isSelected && !disabled && "ring-2 ring-violet-400/70 ring-offset-2 ring-offset-background",
                 isClean &&
                   !disabled &&
-                  "bg-emerald-500/20 text-emerald-100 ring-1 ring-emerald-400/40 shadow-[0_0_20px_-6px_rgba(52,211,153,0.65)]",
+                  "bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-sm ring-1 ring-emerald-300",
+                isSelected &&
+                  !disabled &&
+                  "z-[1] ring-2 ring-violet-400 ring-offset-2 ring-offset-background",
                 !isClean && !disabled && !isFuture && key < dayKey(today) && "text-rose-200/80"
               )}
             >

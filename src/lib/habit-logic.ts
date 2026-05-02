@@ -3,32 +3,68 @@ import {
   differenceInCalendarDays,
   format,
   isBefore,
+  isValid,
   parseISO,
   startOfDay,
   subDays,
 } from "date-fns";
 
-/** Calendar day key in local timezone — YYYY-MM-DD */
+/** Calendar day key in local timezone — YYYY-MM-DD (matches calendar cells; not UTC `toISOString().split("T")[0]`). */
 export function dayKey(d: Date): string {
   return format(startOfDay(d), "yyyy-MM-dd");
+}
+
+/** Today’s completion key — local YYYY-MM-DD, same format as `HabitCalendar` day keys. */
+export function todayCompletionDateKey(): string {
+  return dayKey(new Date());
+}
+
+/**
+ * Coerces stored / legacy date strings to canonical YYYY-MM-DD (zero-padded).
+ * Rejects invalid calendar dates.
+ */
+export function normalizeCalendarDateKey(raw: string): string | null {
+  const s = raw.trim();
+  if (!s) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const d = parseISO(`${s}T12:00:00`);
+    return isValid(d) ? format(startOfDay(d), "yyyy-MM-dd") : null;
+  }
+  const loose = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+  if (loose) {
+    const y = Number(loose[1]);
+    const mo = Number(loose[2]);
+    const da = Number(loose[3]);
+    if (!Number.isFinite(y) || mo < 1 || mo > 12 || da < 1 || da > 31) return null;
+    const key = `${y}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
+    const d = parseISO(`${key}T12:00:00`);
+    return isValid(d) ? format(startOfDay(d), "yyyy-MM-dd") : null;
+  }
+  const d = parseISO(s.includes("T") ? s : `${s}T12:00:00`);
+  return isValid(d) ? format(startOfDay(d), "yyyy-MM-dd") : null;
 }
 
 export function parseDayKey(key: string): Date {
   return startOfDay(parseISO(`${key}T12:00:00`));
 }
 
-/** Dedupe + sort date keys for stable storage. */
+/** Dedupe + sort date keys for stable storage (canonical YYYY-MM-DD). */
 export function sortUniqueDateKeys(dates: readonly string[]): string[] {
-  return [...new Set(dates.map((d) => d.trim()).filter(Boolean))].sort();
+  const normalized = dates
+    .map((d) => normalizeCalendarDateKey(d))
+    .filter((x): x is string => x != null);
+  return [...new Set(normalized)].sort();
 }
 
 /**
  * Toggle a calendar day in the completed-days list (add if missing, remove if present).
  */
 export function toggleDateInList(dates: readonly string[], dateKey: string): string[] {
+  const k = normalizeCalendarDateKey(dateKey);
+  if (!k) return sortUniqueDateKeys([...dates]);
   const set = new Set(sortUniqueDateKeys([...dates]));
-  if (set.has(dateKey)) set.delete(dateKey);
-  else set.add(dateKey);
+  if (set.has(k)) set.delete(k);
+  else set.add(k);
   return [...set].sort();
 }
 

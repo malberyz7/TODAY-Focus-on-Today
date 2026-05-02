@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import { useLanguage } from "@/components/language-provider";
 import { Button } from "@/components/ui/button";
-import { dayKey } from "@/lib/habit-logic";
+import { todayCompletionDateKey } from "@/lib/habit-logic";
 import { cn } from "@/lib/utils";
 import { useHabitStore } from "@/store/habit-store";
 
@@ -27,7 +27,7 @@ export function TodayCheckInButton({ habitId, checked, className, antiSryvGate }
       openAntiSryvModal(habitId);
       return;
     }
-    toggleDay(habitId, dayKey(new Date()));
+    toggleDay(habitId, todayCompletionDateKey());
   }
 
   return (
